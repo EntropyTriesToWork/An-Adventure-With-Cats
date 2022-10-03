@@ -19,7 +19,7 @@ namespace SmallTimeRogue.Enemy
 
         [BoxGroup("Read Only")] [ReadOnly] public Transform target;
         [BoxGroup("Read Only")] [ReadOnly] public bool activated;
-        [BoxGroup("Read Only")] [ReadOnly] [SerializeField] float _timeToNextStateCheck, _attackCooldown, _nextJumpTime;
+        [BoxGroup("Read Only")] [ReadOnly] [SerializeField] protected float _timeToNextStateCheck, _attackCooldown, _nextJumpTime;
         protected HealthComponent _hc;
         protected Rigidbody2D _rb;
 
@@ -33,7 +33,18 @@ namespace SmallTimeRogue.Enemy
         }
         private void FixedUpdate()
         {
-            CheckState();
+            if (GameManager.Instance == null) { return; }
+            if (GameManager.Instance.CurrentGameState == GameState.Normal)
+            {
+                CheckState();
+            }
+        }
+        public virtual void Update()
+        {
+            if (GameManager.Instance.CurrentGameState == GameState.Normal)
+            {
+                if (_attackCooldown >= 0f) { _attackCooldown -= Time.deltaTime; }
+            }
         }
         private void Awake()
         {
@@ -56,11 +67,10 @@ namespace SmallTimeRogue.Enemy
             GameObject go = Instantiate(activationEffect, transform);
             go.transform.localPosition = Vector3.up * enemyStats.bodySize.y;
         }
-        public void CheckState()
+        public virtual void CheckState()
         {
             if (_hc.Dead) { return; }
             if (_timeToNextStateCheck >= 0f) { _timeToNextStateCheck -= Time.fixedDeltaTime; }
-            if (_attackCooldown >= 0f) { _attackCooldown -= Time.fixedDeltaTime; }
             if (_nextJumpTime >= 0f) { _nextJumpTime -= Time.fixedDeltaTime; }
 
             if (_timeToNextStateCheck <= 0f)
@@ -82,6 +92,7 @@ namespace SmallTimeRogue.Enemy
         public virtual void Death(DamageReport report)
         {
             GameManager.Instance?.SpawnCoins(Mathf.RoundToInt(Random.Range(coinsDropped.x, coinsDropped.y)), transform.position);
+            gameObject.SetActive(false);
         }
         public virtual void Jump()
         {

@@ -33,7 +33,7 @@ namespace SmallTimeRogue.Enemy
                 if (_remainingFuseTime <= 0f)
                 {
                     GameManager.Instance?.SpawnCoins(Mathf.RoundToInt(Random.Range(coinsDropped.x, coinsDropped.y)), transform.position);
-                    DropBomb(0); _hc.DieSilently(); Destroy(gameObject);
+                    DropBomb(0); _hc.DieSilently(); gameObject.SetActive(false);
                 }
             }
         }
@@ -65,14 +65,12 @@ namespace SmallTimeRogue.Enemy
         }
         public override void Death(DamageReport report)
         {
-            base.Death(report);
             if (_preparingToBlow)
             {
                 DropBomb(_remainingFuseTime);
             }
             else { DropBomb(bombFuseTime); }
-
-            Destroy(gameObject);
+            base.Death(report);
         }
         #endregion
     }

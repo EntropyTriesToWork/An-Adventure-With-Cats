@@ -14,6 +14,7 @@ namespace SmallTimeRogue.Player
         [BoxGroup("Weapon")] public OverlapCollider meleeWeaponSwing;
 
         [BoxGroup("Debug")] public float attackCooldown = 0.1f;
+        [BoxGroup("Debug")] public float attackDelay = 0.1f;
 
         [BoxGroup("Required")] [Required] public Camera playerCamera;
         [BoxGroup("Read Only")] [ReadOnly] [SerializeField] float _attackCooldown;
@@ -38,7 +39,9 @@ namespace SmallTimeRogue.Player
         private void Update()
         {
             if (_attackCooldown >= 0f) { _attackCooldown -= Time.deltaTime; }
-            else { weaponSprite.enabled = true; }
+            if (_attackCooldown - attackDelay <= 0f) { weaponSprite.enabled = true; }
+
+            if (_primaryActuated) { OnPrimary(); }
         }
         private void FixedUpdate()
         {
@@ -51,7 +54,7 @@ namespace SmallTimeRogue.Player
         {
             if (_attackCooldown >= 0f) { return; }
 
-            _attackCooldown = attackCooldown;
+            _attackCooldown = attackCooldown + attackDelay;
             weaponSprite.enabled = false;
             OverlapCollider oc = Instantiate(meleeWeaponSwing, weaponSprite.transform);
             //oc.transform.localScale = new Vector3(1, _mousePos.x <= transform.position.x ? -1 : 1);
@@ -66,14 +69,14 @@ namespace SmallTimeRogue.Player
                     HealthComponent hc = hit.collider.GetComponent<HealthComponent>();
                     if (hc != null)
                     {
-                        hc.TakeDamage(new DamageInfo() { damage = 10 });
+                        DamageReport report = hc.TakeDamage(new DamageInfo() { damage = 10 });
                         hc.KnockBack((hit.collider.transform.position - transform.position).normalized * 10f);
-
+                        GameEffectsManager.Instance.SpawnFloatingNumber(report.damageTaken, Color.red, hc.transform.position + Vector3.up);
                         totalHits++;
                     }
                 }
             }
-            if (totalHits > 0) { _playerBody.FreezeFrame(0.1f); }
+            if (totalHits > 0) { GameEffectsManager.Instance.FreezeFrame(0.1f, 0.2f); }
         }
 
         public void OnLook(InputValue value)

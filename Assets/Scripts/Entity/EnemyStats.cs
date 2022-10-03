@@ -7,6 +7,7 @@ namespace SmallTimeRogue.Enemy
     [System.Serializable]
     public struct EnemyStats
     {
+        public int damage;
         public float visionRange;
         public float attackRange;
         public float attackCooldown;

@@ -21,7 +21,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6939015701246560139
 Transform:
   m_ObjectHideFlags: 0
@@ -54,6 +54,7 @@ MonoBehaviour:
     moveSpeed: 25
     jumpForce: 35
   enemyStats:
+    damage: 0
     visionRange: 8
     attackRange: 1.5
     attackCooldown: 999
@@ -70,6 +71,9 @@ MonoBehaviour:
   bomb: {fileID: 3812229075734698292, guid: ba52c967f5487ee4da619420420ca077, type: 3}
   damageInfo:
     damage: 50
+    armorPenetration: 0
+    critChance: 0
+    critDamage: 0
   bombFuseTime: 2
   bodySprite: {fileID: 6939015701246560135}
 --- !u!114 &6939015701246560132
@@ -158,7 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6360b4731199e7940867f689bb0984a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  framesPerSecond: 10
+  framesPerSecond: 8
   DestroyOnEnd: 0
   PlayOnAwake: 1
   Loop: 1

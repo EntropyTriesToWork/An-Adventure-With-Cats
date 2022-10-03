@@ -4,6 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 namespace SmallTimeRogue
 {
@@ -14,22 +15,20 @@ namespace SmallTimeRogue
         #region SessionStats
         [FoldoutGroup("Session Stats")] [SerializeField] [ReadOnly] GameState _currentGameState;
         [FoldoutGroup("Session Stats")] [SerializeField] [ReadOnly] float _gameTime;
-        [FoldoutGroup("Session Stats")] [SerializeField] [ReadOnly] float _gold;
+        [FoldoutGroup("Session Stats")] [SerializeField] [ReadOnly] int _gold;
         public GameState CurrentGameState => _currentGameState;
         public float GameTime => _gameTime;
-        public float Gold => _gold;
+        public int Gold => _gold;
         #endregion
 
-        #region Audio
-        [FoldoutGroup("Audio")] [Required] public AudioSource sfxAudioSource;
-        [FoldoutGroup("Audio")] [Required] public AudioSource guiAudioSource;
-        [FoldoutGroup("Audio")] [Required] public AudioClip coinCollectionSfx;
+        #region Events
+        public Action<int> OnGoldChange;
         #endregion
 
         #region UI
         [FoldoutGroup("UI")] [Required] public CanvasGroup mainCanvas;
         [FoldoutGroup("UI")] [Required] public Image healthBarFill;
-        [FoldoutGroup("UI")] [Required] public TMP_Text healthText;
+        [FoldoutGroup("UI")] [Required] public TMP_Text healthText, goldCount;
         public void UpdateHealthBar(int currentHealth, int maxHealth)
         {
             healthBarFill.fillAmount = (float)currentHealth / (float)maxHealth;
@@ -50,10 +49,19 @@ namespace SmallTimeRogue
         {
             _gold += amt;
             sfxAudioSource.PlayOneShot(coinCollectionSfx);
+            UpdateGoldCount();
+        }
+        public void UpdateGoldCount()
+        {
+            goldCount.text = _gold.ToString();
+            OnGoldChange?.Invoke(_gold);
         }
         #endregion
 
         #region Audio
+        [FoldoutGroup("Audio")] [Required] public AudioSource sfxAudioSource;
+        [FoldoutGroup("Audio")] [Required] public AudioSource guiAudioSource;
+        [FoldoutGroup("Audio")] [Required] public AudioClip coinCollectionSfx;
         public void PlayOneShotSFX(AudioClip audioClip)
         {
             sfxAudioSource.PlayOneShot(audioClip);
@@ -69,6 +77,10 @@ namespace SmallTimeRogue
                 _currentGameState = GameState.Normal;
             }
             else { Destroy(gameObject); }
+        }
+        private void Start()
+        {
+            UpdateGoldCount();
         }
         private void Update()
         {

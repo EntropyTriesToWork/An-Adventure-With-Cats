@@ -130,8 +130,8 @@ namespace SmallTimeRogue
     public struct DamageInfo
     {
         public int damage;
-        //public int armorPenetration;
-        //public int critChance;
-        //public int critDamage;
+        public int armorPenetration;
+        public int critChance;
+        public int critDamage; //At 0, crit damage does 150% damage and increases to this stat are additive.
     }
 }

@@ -39,7 +39,6 @@ namespace SmallTimeRogue.Player
 
         private Coroutine _jumpGravityAffector = null;
         private Coroutine _dashControl = null;
-        private Coroutine _freezeFrame = null;
         #endregion
 
         #region Events
@@ -63,6 +62,7 @@ namespace SmallTimeRogue.Player
         public void Start()
         {
             _hc.OnHealthChange += UpdateHealthBar;
+            UpdateHealthBar();
         }
         private void OnDisable()
         {
@@ -90,18 +90,6 @@ namespace SmallTimeRogue.Player
         }
         #endregion
 
-        public void FreezeFrame(float time)
-        {
-            if (_freezeFrame != null) { StopCoroutine(_freezeFrame); }
-            _freezeFrame = StartCoroutine(DoFreezeFrame(time));
-
-            IEnumerator DoFreezeFrame(float time)
-            {
-                Time.timeScale = 0.2f;
-                yield return new WaitForSecondsRealtime(time);
-                Time.timeScale = 1f;
-            }
-        }
         private void UpdateHealthBar() { GameManager.Instance.UpdateHealthBar(_hc.Health, _hc.MaxHealth); }
         #region Input
         public void OnMove(InputValue value)
