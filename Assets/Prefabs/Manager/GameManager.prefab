@@ -512,14 +512,14 @@ MonoBehaviour:
   _currentGameState: 0
   _gameTime: 0
   _gold: 0
-  sfxAudioSource: {fileID: 2994917830600964830}
-  guiAudioSource: {fileID: 2994917830600964831}
-  coinCollectionSfx: {fileID: 8300000, guid: abeef7d1613e44049b4d6a7469819185, type: 3}
   mainCanvas: {fileID: 2994917831648005780}
   healthBarFill: {fileID: 2994917830838463853}
   healthText: {fileID: 2994917830630432353}
   goldCount: {fileID: 2994917830261138142}
   coinPrefab: {fileID: 6385411471677167167, guid: f4c184631f15e9e41946a47ba7fa086b, type: 3}
+  sfxAudioSource: {fileID: 2994917830600964830}
+  guiAudioSource: {fileID: 2994917830600964831}
+  coinCollectionSfx: {fileID: 8300000, guid: abeef7d1613e44049b4d6a7469819185, type: 3}
 --- !u!82 &2994917830600964830
 AudioSource:
   m_ObjectHideFlags: 0

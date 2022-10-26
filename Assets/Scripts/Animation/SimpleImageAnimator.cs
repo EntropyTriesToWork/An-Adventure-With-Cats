@@ -24,7 +24,7 @@ public class SimpleImageAnimator : MonoBehaviour
         if (PlayOnAwake)
         {
             _image.enabled = true;
-            InvokeRepeating("SwitchSprites", 0, 1f / framesPerSecond);
+            InvokeRepeating(nameof(SwitchSprites), 0, 1f / framesPerSecond);
         }
     }
 
@@ -32,7 +32,7 @@ public class SimpleImageAnimator : MonoBehaviour
     {
         if (spriteIndex == 0) { OnStartPlay.Invoke(); }
         if (sprites.Length == spriteIndex && DestroyOnEnd) { Destroy(gameObject); OnEndPlay.Invoke(); return; }
-        if (sprites.Length == spriteIndex && HideOnEnd)
+        if (sprites.Length <= spriteIndex && HideOnEnd)
         {
             _image.enabled = false;
             spriteIndex = 0;
@@ -47,8 +47,11 @@ public class SimpleImageAnimator : MonoBehaviour
             _image.sprite = sprites[spriteIndex];
             if (sprites.Length == spriteIndex)
             {
-                CancelInvoke("SwitchSprites");
+                CancelInvoke(nameof(SwitchSprites));
+                _image.sprite = sprites[^1];
+                return;
             }
+            _image.sprite = sprites[Mathf.Clamp(spriteIndex, 0, sprites.Length)];
             spriteIndex += 1;
         }
     }
@@ -56,11 +59,11 @@ public class SimpleImageAnimator : MonoBehaviour
     public void Play()
     {
         _image.enabled = true;
-        InvokeRepeating("SwitchSprites", 0, 1f / framesPerSecond);
+        InvokeRepeating(nameof(SwitchSprites), 0, 1f / framesPerSecond);
     }
     public void Pause()
     {
-        CancelInvoke("SwitchSprites");
+        CancelInvoke(nameof(SwitchSprites));
     }
     public void Restart()
     {
@@ -69,7 +72,7 @@ public class SimpleImageAnimator : MonoBehaviour
     }
     public void GoToEnd()
     {
-        CancelInvoke("SwitchSprites");
+        CancelInvoke(nameof(SwitchSprites));
         spriteIndex = sprites.Length - 1;
         _image.sprite = sprites[spriteIndex];
     }

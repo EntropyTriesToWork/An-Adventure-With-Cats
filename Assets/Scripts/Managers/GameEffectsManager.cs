@@ -16,11 +16,11 @@ namespace SmallTimeRogue
         public FloatingNumber floatingNumberPrefab;
         private List<FloatingNumber> _floatingNumbers = new List<FloatingNumber>();
 
-        public void SpawnFloatingNumber(int number, Color color, Vector2 position)
+        public void SpawnFloatingNumber(int number, bool crit, Vector2 position)
         {
             FloatingNumber floatingNumber = GetFloatingNumber();
             floatingNumber.gameObject.SetActive(true);
-            floatingNumber.ShowNumber(number, color);
+            floatingNumber.ShowNumber(number, crit ? Color.red : Color.white);
             floatingNumber.transform.position = position;
         }
         public FloatingNumber GetFloatingNumber()

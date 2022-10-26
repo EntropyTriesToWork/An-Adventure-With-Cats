@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77fd9395202eda74ca72daf6f574ec7d, type: 3}
+  m_Name: Wooden Sword
+  m_EditorClassIdentifier: 
+  weaponStats:
+    name: ITEM_NAME_MISSING
+    description: ITEM_DESC_MISSING
+    dropWeight: 0
+    rarity: 0
+    itemSprite: {fileID: 0}
+    itemPrefab: {fileID: 0}
+    damage: 10
+    armorPenetration: 0
+    critChance: 0
+    critDamage: 0
+    knockBack: 5
+    primaryCooldown: 0.2
+    primaryDuration: 0.05
+    secondaryCooldown: 1
+    secondaryDuration: 0.5
+    moveSpeedModifier: 0
+    slowsPlayerWhenAttacking: 0
+    allowsHoldingPrimaryDown: 1
+    allowsHoldingSecondaryDown: 1
+    primaryEffect: {fileID: 2663299350763123319, guid: f3f5eff15a2a5e2468040ca12234325b, type: 3}
+    secondaryEffect: {fileID: 2663299350763123319, guid: 36a4396ee59b92e41a6a28e1b3bb34b4, type: 3}

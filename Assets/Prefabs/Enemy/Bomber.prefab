@@ -21,7 +21,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6939015701246560139
 Transform:
   m_ObjectHideFlags: 0
@@ -49,20 +49,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 638e26b94197420459196f922d51d91c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseStats:
-    health: 50
-    moveSpeed: 25
-    jumpForce: 35
-  enemyStats:
-    damage: 0
-    visionRange: 8
-    attackRange: 1.5
-    attackCooldown: 999
-    stateCheckIntervals: 1
-    jumpCooldown: 2
-    bodySize: {x: 1, y: 1}
-  coinsDropped: {x: 0, y: 1}
+  baseStats: {fileID: 11400000, guid: 021f76ddf14c3d5478a11f2807c1f6d7, type: 2}
   activationEffect: {fileID: 4820360967339141416, guid: 3622501e343bb8a45928887150f795b1, type: 3}
+  _baseStats:
+    health: 0
+    moveSpeed: 0
+    jumpForce: 0
+  _enemyStats:
+    damage: 0
+    visionRange: 0
+    attackRange: 0
+    attackCooldown: 0
+    stateCheckIntervals: 0
+    jumpCooldown: 0
+    bodySize: {x: 0, y: 0}
+    coinsDropped: {x: 0, y: 0}
   target: {fileID: 0}
   activated: 0
   _timeToNextStateCheck: 0
@@ -92,9 +93,12 @@ MonoBehaviour:
   _lastTimeTookDamage: 0
   _dead: 0
   _damageImmune: 0
+  _collisionDamageImmune: 0
+  _collisionDamageImmunityTime: 0
   maxHealth:
     BaseValue: 0
-  immunityFrameLength: 0.02
+  immunityFrameLength: 0.01
+  collisionDamageThreshold: 5
   flashOnHit: 1
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   bodySprite: {fileID: 6939015701246560135}

@@ -36,7 +36,6 @@ namespace SmallTimeRogue.Player
         private Vector2 _playerSize;
         private float _lastDashTime;
         private HealthComponent _hc;
-
         private Coroutine _jumpGravityAffector = null;
         private Coroutine _dashControl = null;
         #endregion
@@ -106,7 +105,6 @@ namespace SmallTimeRogue.Player
                 DoJump();
                 jumpsRemaining--;
             }
-
             void DoJump()
             {
                 CancelDash();
@@ -115,17 +113,18 @@ namespace SmallTimeRogue.Player
                 _rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 if (_jumpGravityAffector != null) { StopCoroutine(_jumpGravityAffector); _jumpGravityAffector = null; }
                 _jumpGravityAffector = StartCoroutine(JumpReduceGravity());
-            }
+                _hc.AddCollisionDamageImmunityTime(0.1f);
 
-            IEnumerator JumpReduceGravity()
-            {
-                float time = 0.5f;
-                _rb.gravityScale = 0;
-                while (time > 0f)
+                IEnumerator JumpReduceGravity()
                 {
-                    yield return new WaitForFixedUpdate();
-                    time -= Time.fixedDeltaTime;
-                    _rb.gravityScale = Mathf.Lerp(gravity.Value, 0f, time / 0.5f);
+                    float time = 0.5f;
+                    _rb.gravityScale = 0;
+                    while (time > 0f)
+                    {
+                        yield return new WaitForFixedUpdate();
+                        time -= Time.fixedDeltaTime;
+                        _rb.gravityScale = Mathf.Lerp(gravity.Value, 0f, time / 0.5f);
+                    }
                 }
             }
         }
@@ -153,6 +152,7 @@ namespace SmallTimeRogue.Player
                 _rb.AddForce(rawInputMovement * dashForce, ForceMode2D.Impulse);
                 dashesRemaining--;
                 _dashControl = StartCoroutine(DoDash());
+                _hc.AddCollisionDamageImmunityTime(dashTime);
             }
 
             IEnumerator DoDash()
@@ -175,9 +175,13 @@ namespace SmallTimeRogue.Player
         #endregion
 
         #region Physics
+        public void AddForce(Vector2 force)
+        {
+            _rb.AddForce(force, ForceMode2D.Impulse);
+        }
         private void CastForGround()
         {
-            if (Physics2D.OverlapBox(transform.position + new Vector3(0, -_playerSize.y / 2f, 0), new Vector2(_playerSize.x * 0.95f, 0.1f), 0, LayerMask.GetMask("Ground")))
+            if (Physics2D.OverlapBox(transform.position + new Vector3(0, -_playerSize.y / 2f, 0), new Vector2(_playerSize.x * 0.95f, 0.2f), 0, LayerMask.GetMask("Ground")))
             {
                 grounded = true;
                 if (_rb.velocity.y < 1f)

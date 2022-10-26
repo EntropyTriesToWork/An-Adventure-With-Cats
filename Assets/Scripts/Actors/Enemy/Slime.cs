@@ -6,6 +6,12 @@ namespace SmallTimeRogue.Enemy
 {
     public class Slime : Enemy
     {
+        private float _gravity = 10;
+        public override void Awake()
+        {
+            base.Awake();
+            _gravity = _rb.gravityScale;
+        }
         public override void Attack()
         {
 
@@ -14,27 +20,38 @@ namespace SmallTimeRogue.Enemy
         public override void Chase()
         {
             Jump();
+            TurnToFaceTarget();
         }
 
         public override void Jump()
         {
             if (_nextJumpTime <= 0f)
             {
-                _nextJumpTime = enemyStats.jumpCooldown;
-                _rb.AddForce(Vector2.up * baseStats.jumpForce, ForceMode2D.Impulse);
-                _rb.AddForce(DirectionToTarget * baseStats.moveSpeed, ForceMode2D.Impulse);
-                StartCoroutine(AddExtraForces());
+                _nextJumpTime = _enemyStats.jumpCooldown;
+
+                StartCoroutine(DoJump());
             }
-            IEnumerator AddExtraForces()
+            IEnumerator DoJump()
             {
-                float time = 0.2f;
+                float time = 0.5f;
+                _rb.gravityScale = 0;
+                _rb.AddForce(Vector2.up * _baseStats.jumpForce, ForceMode2D.Impulse);
+                _rb.AddForce(DirectionToTarget * _baseStats.moveSpeed, ForceMode2D.Impulse);
+                _hc.AddCollisionDamageImmunityTime(0.3f);
+                Vector2 dir = DirectionToTarget;
                 while (time > 0f)
                 {
-                    yield return new WaitForEndOfFrame();
-                    _rb.AddForce(DirectionToTarget * baseStats.moveSpeed);
-                    time -= Time.deltaTime;
+                    yield return new WaitForFixedUpdate();
+                    time -= Time.fixedDeltaTime;
+                    _rb.gravityScale = Mathf.Lerp(_gravity, 0f, time / 0.5f);
+                    _rb.AddForce(dir * _baseStats.moveSpeed);
                 }
             }
+        }
+        public override void Start()
+        {
+            base.Start();
+            _gravity = _rb.gravityScale;
         }
 
         public void OnCollisionEnter2D(Collision2D collision)
@@ -46,8 +63,8 @@ namespace SmallTimeRogue.Enemy
         {
             if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
-                collision.collider.GetComponent<IDamageable>().TakeDamage(new DamageInfo() { damage = enemyStats.damage });
-                _attackCooldown = enemyStats.attackCooldown;
+                collision.collider.GetComponent<IDamageable>().TakeDamage(new DamageInfo() { damage = _enemyStats.damage });
+                _attackCooldown = _enemyStats.attackCooldown;
             }
         }
 

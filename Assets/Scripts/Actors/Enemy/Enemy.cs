@@ -11,26 +11,20 @@ namespace SmallTimeRogue.Enemy
     [RequireComponent(typeof(Rigidbody2D))]
     public abstract class Enemy : MonoBehaviour
     {
-        [BoxGroup("Stats")] public EntityStats baseStats;
-        [BoxGroup("Stats")] public EnemyStats enemyStats;
-        [BoxGroup("Stats")] public Vector2 coinsDropped;
 
-        [BoxGroup("Required")] [Required] public GameObject activationEffect;
+        [BoxGroup("Stats")] [Required] public EnemyStatsSO baseStats;
 
-        [BoxGroup("Read Only")] [ReadOnly] public Transform target;
-        [BoxGroup("Read Only")] [ReadOnly] public bool activated;
-        [BoxGroup("Read Only")] [ReadOnly] [SerializeField] protected float _timeToNextStateCheck, _attackCooldown, _nextJumpTime;
+        [BoxGroup("Effects")] [Required] public GameObject activationEffect;
+
+        [FoldoutGroup("Read Only")] [SerializeField] [ReadOnly] protected EntityStats _baseStats;
+        [FoldoutGroup("Read Only")] [SerializeField] [ReadOnly] protected EnemyStats _enemyStats;
+        [FoldoutGroup("Read Only")] [ReadOnly] public Transform target;
+        [FoldoutGroup("Read Only")] [ReadOnly] public bool activated;
+        [FoldoutGroup("Read Only")] [ReadOnly] [SerializeField] protected float _timeToNextStateCheck, _attackCooldown, _nextJumpTime;
         protected HealthComponent _hc;
         protected Rigidbody2D _rb;
 
         #region Messages
-        public virtual void OnEnable()
-        {
-            _hc = GetComponent<HealthComponent>();
-            target = FindObjectOfType<PlayerBody>().transform;
-            _hc.SetHealth(baseStats.health, baseStats.health);
-            _rb = GetComponent<Rigidbody2D>();
-        }
         private void FixedUpdate()
         {
             if (GameManager.Instance == null) { return; }
@@ -46,13 +40,23 @@ namespace SmallTimeRogue.Enemy
                 if (_attackCooldown >= 0f) { _attackCooldown -= Time.deltaTime; }
             }
         }
-        private void Awake()
+        public virtual void Start()
         {
+            target = DungeonManager.Instance?.Player.transform;
+        }
+        public virtual void Awake()
+        {
+            _rb = GetComponent<Rigidbody2D>();
             _hc = GetComponent<HealthComponent>();
             _hc.OnDeathAction += Death;
 
             _timeToNextStateCheck = 0;
             _attackCooldown = 0;
+
+            _baseStats = baseStats.baseStats;
+            _enemyStats = baseStats.enemyStats;
+
+            _hc.SetHealth(_baseStats.health, _baseStats.health);
         }
         private void OnDisable()
         {
@@ -65,7 +69,7 @@ namespace SmallTimeRogue.Enemy
         {
             activated = true;
             GameObject go = Instantiate(activationEffect, transform);
-            go.transform.localPosition = Vector3.up * enemyStats.bodySize.y;
+            go.transform.localPosition = Vector3.up * _enemyStats.bodySize.y;
         }
         public virtual void CheckState()
         {
@@ -75,12 +79,17 @@ namespace SmallTimeRogue.Enemy
 
             if (_timeToNextStateCheck <= 0f)
             {
-                if (!activated) { Idle(); _timeToNextStateCheck = enemyStats.stateCheckIntervals; return; }
-                if (HorizontalDistanceToTarget >= enemyStats.attackRange) { Chase(); return; }
+                if (target == null)
+                {
+                    target = DungeonManager.Instance?.Player.transform;
+                    if (target == null) { _timeToNextStateCheck = _enemyStats.stateCheckIntervals; return; }
+                }
+                if (!activated) { Idle(); _timeToNextStateCheck = _enemyStats.stateCheckIntervals; return; }
+                if (HorizontalDistanceToTarget >= _enemyStats.attackRange) { Chase(); return; }
                 else if (!IsTargetInAttackRange) { Jump(); return; }
-                if (IsTargetInAttackRange && _attackCooldown <= 0f) { Attack(); _attackCooldown = enemyStats.attackCooldown; return; }
+                if (IsTargetInAttackRange && _attackCooldown <= 0f) { Attack(); _attackCooldown = _enemyStats.attackCooldown; return; }
                 Debug.LogWarning("No states were triggered!");
-                _timeToNextStateCheck = enemyStats.stateCheckIntervals;
+                _timeToNextStateCheck = _enemyStats.stateCheckIntervals;
             }
         }
         public virtual void Idle()
@@ -91,16 +100,26 @@ namespace SmallTimeRogue.Enemy
         public abstract void Attack();
         public virtual void Death(DamageReport report)
         {
-            GameManager.Instance?.SpawnCoins(Mathf.RoundToInt(Random.Range(coinsDropped.x, coinsDropped.y)), transform.position);
+            DropCoins();
             gameObject.SetActive(false);
         }
+
+        protected void DropCoins()
+        {
+            GameManager.Instance?.SpawnCoins(Mathf.RoundToInt(Random.Range(_enemyStats.coinsDropped.x, _enemyStats.coinsDropped.y)), transform.position);
+        }
+
         public virtual void Jump()
         {
             if (_nextJumpTime <= 0f)
             {
-                _nextJumpTime = enemyStats.jumpCooldown;
-                _rb.AddForce(Vector2.up * baseStats.jumpForce, ForceMode2D.Impulse);
+                _nextJumpTime = _enemyStats.jumpCooldown;
+                _rb.AddForce(Vector2.up * _baseStats.jumpForce, ForceMode2D.Impulse);
             }
+        }
+        public void TurnToFaceTarget()
+        {
+            transform.localScale = new Vector3(DirectionToTarget.x > 0 ? 1 : -1, 1, 1);
         }
         #endregion
 
@@ -109,16 +128,16 @@ namespace SmallTimeRogue.Enemy
         public Vector2 HorizontalDirectionToTarget => new Vector2(target.position.x, 0) - new Vector2(transform.position.x, 0);
         public float DistanceToTarget => Vector2.Distance(target.position, transform.position);
         public float HorizontalDistanceToTarget => Vector2.Distance(new Vector2(target.position.x, 0), new Vector2(transform.position.x, 0));
-        public bool IsTargetVisible => DistanceToTarget <= enemyStats.visionRange;
-        public bool IsTargetInAttackRange => DistanceToTarget <= enemyStats.attackRange;
-        public bool IsWallBlocking => Physics2D.CircleCast(transform.position, enemyStats.bodySize.y / 2.1f, HorizontalDirectionToTarget, 1f, LayerMask.GetMask("Ground"));
-        public RaycastHit2D CastForLineOfSight => Physics2D.Raycast(transform.position, DirectionToTarget, enemyStats.visionRange, LayerMask.GetMask("Player"));
+        public bool IsTargetVisible => DistanceToTarget <= _enemyStats.visionRange;
+        public bool IsTargetInAttackRange => DistanceToTarget <= _enemyStats.attackRange;
+        public bool IsWallBlocking => Physics2D.CircleCast(transform.position, _enemyStats.bodySize.y / 2.1f, HorizontalDirectionToTarget, 1f, LayerMask.GetMask("Ground"));
+        public RaycastHit2D CastForLineOfSight => Physics2D.Raycast(transform.position, DirectionToTarget, _enemyStats.visionRange, LayerMask.GetMask("Player"));
         #endregion
 
         public void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, enemyStats.attackRange);
+            Gizmos.DrawWireSphere(transform.position, _enemyStats.attackRange);
         }
     }
 }

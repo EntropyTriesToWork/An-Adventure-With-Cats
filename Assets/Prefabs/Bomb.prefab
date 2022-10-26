@@ -110,7 +110,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!58 &3812229075734698294
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -169,6 +169,9 @@ MonoBehaviour:
   force: 100
   damageInfo:
     damage: 50
+    armorPenetration: 0
+    critChance: 0
+    critDamage: 0
   negateOriginalVelocity: 1
   targetedLayers:
     serializedVersion: 2
