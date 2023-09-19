@@ -48,7 +48,7 @@ namespace SmallTimeRogue
         public void CollectCoin(int amt)
         {
             _gold += amt;
-            sfxAudioSource.PlayOneShot(coinCollectionSfx);
+            sfxAudioSource.PlayOneShot(coinCollectSFX[UnityEngine.Random.Range(0, coinCollectSFX.Length)]);
             UpdateGoldCount();
         }
         public void UpdateGoldCount()
@@ -61,7 +61,7 @@ namespace SmallTimeRogue
         #region Audio
         [FoldoutGroup("Audio")] [Required] public AudioSource sfxAudioSource;
         [FoldoutGroup("Audio")] [Required] public AudioSource guiAudioSource;
-        [FoldoutGroup("Audio")] [Required] public AudioClip coinCollectionSfx;
+        [FoldoutGroup("Audio")] [Required] public AudioClip[] coinCollectSFX;
         public void PlayOneShotSFX(AudioClip audioClip)
         {
             sfxAudioSource.PlayOneShot(audioClip);

@@ -264,7 +264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6360b4731199e7940867f689bb0984a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  framesPerSecond: 10
+  framesPerSecond: 8
   DestroyOnEnd: 0
   PlayOnAwake: 1
   Loop: 1

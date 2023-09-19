@@ -519,7 +519,9 @@ MonoBehaviour:
   coinPrefab: {fileID: 6385411471677167167, guid: f4c184631f15e9e41946a47ba7fa086b, type: 3}
   sfxAudioSource: {fileID: 2994917830600964830}
   guiAudioSource: {fileID: 2994917830600964831}
-  coinCollectionSfx: {fileID: 8300000, guid: abeef7d1613e44049b4d6a7469819185, type: 3}
+  coinCollectSFX:
+  - {fileID: 8300000, guid: 8c318b47058be934b8c7f6397c77e99b, type: 3}
+  - {fileID: 8300000, guid: fa1952b5ac650cb409b5643016fa7f80, type: 3}
 --- !u!82 &2994917830600964830
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1779,6 +1781,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
   m_XRTrackingOrigin: {fileID: 0}
@@ -1795,6 +1798,7 @@ MonoBehaviour:
   m_TrackedDeviceOrientationAction: {fileID: 0}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
 --- !u!1 &2994917831648005807
 GameObject:
   m_ObjectHideFlags: 0
