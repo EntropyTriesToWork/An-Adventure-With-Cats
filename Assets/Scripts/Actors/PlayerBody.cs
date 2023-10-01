@@ -41,6 +41,8 @@ namespace SmallTimeRogue.Player
         private HealthComponent _hc;
         private Coroutine _jumpGravityAffector = null;
         private Coroutine _dashControl = null;
+
+        [HideInInspector] public EntityStat MoveSpeed;
         #endregion
 
         #region Events
@@ -66,6 +68,7 @@ namespace SmallTimeRogue.Player
         {
             _hc.OnHealthChange += UpdateHealthBar;
             UpdateHealthBar();
+            MoveSpeed.BaseValue = moveSpeed;
         }
         private void OnDisable()
         {
@@ -76,7 +79,7 @@ namespace SmallTimeRogue.Player
             CastForGround();
             if (rawInputMovement != Vector2.zero && canMove)
             {
-                _rb.velocity += rawInputMovement * moveSpeed * Time.deltaTime * (grounded ? 1f : 0.75f);
+                _rb.velocity += rawInputMovement * MoveSpeed.Value * Time.deltaTime * (grounded ? 1f : 0.75f);
                 lastFrameInput = rawInputMovement;
             }
 
@@ -87,13 +90,13 @@ namespace SmallTimeRogue.Player
                 if (dashCooldownRemaining <= 0f)
                 {
                     dashesRemaining++;
-                    dashCooldownRemaining = dashCooldown;
                 }
             }
         }
         #endregion
 
         private void UpdateHealthBar() { GameManager.Instance.UpdateHealthBar(_hc.Health, _hc.MaxHealth); }
+
         #region Input
         public void OnMove(InputValue value)
         {
@@ -157,6 +160,7 @@ namespace SmallTimeRogue.Player
                 dashesRemaining--;
                 _dashControl = StartCoroutine(DoDash());
                 _hc.AddCollisionDamageImmunityTime(dashTime);
+                dashCooldownRemaining = dashCooldown;
             }
 
             IEnumerator DoDash()
@@ -185,20 +189,18 @@ namespace SmallTimeRogue.Player
         }
         private void CastForGround()
         {
-            if (Physics2D.OverlapBox(transform.position + new Vector3(0, -_playerSize.y / 2f, 0), new Vector2(_playerSize.x * 0.95f, 0.2f), 0, LayerMask.GetMask("Ground")))
+            if (Physics2D.OverlapBox(transform.position + new Vector3(0, -_playerSize.y / 2f, 0), new Vector2(_playerSize.x * 0.95f, 0.2f), 0, LayerMask.GetMask("Ground"))) //Cast for ground right below player sprite's feet. 
             {
-                float dist = Vector2.Distance(lastSurfaceTouched, transform.position);
-                Debug.Log(dist);
-                if (dist > 4f) { _hc.TakeDamage(new DamageInfo() { damage = Mathf.RoundToInt(fallDamageCurve.Evaluate(dist)) }); }
+                float dist = lastSurfaceTouched.y - transform.position.y;
+                if (dist > 4f) { _hc.TakeDamage(new DamageInfo() { damage = Mathf.RoundToInt(_hc.MaxHealth * (fallDamageCurve.Evaluate(dist) / 100f)) }); } //Calculated fall damage. 
                 grounded = true;
-                lastSurfaceTouched = transform.position;
                 if (_rb.velocity.y < 1f)
+                {
+                    lastSurfaceTouched = transform.position;
                     jumpsRemaining = jumps;
+                }
             }
-            else
-            {
-                grounded = false;
-            }
+            else { grounded = false; }
         }
         #endregion
     }

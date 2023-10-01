@@ -145,7 +145,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &65266497
 Transform:
   m_ObjectHideFlags: 0
@@ -13976,7 +13976,7 @@ Tilemap:
       - {fileID: -440046215, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
       - {fileID: 369434317, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
       - {fileID: 1839222253, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
-      m_AnimationSpeed: 5.0000005
+      m_AnimationSpeed: 5
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -23, y: -10, z: 0}
@@ -14048,7 +14048,7 @@ Tilemap:
       - {fileID: -440046215, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
       - {fileID: 369434317, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
       - {fileID: 1839222253, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
-      m_AnimationSpeed: 5
+      m_AnimationSpeed: 5.0000005
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -20, y: -10, z: 0}
@@ -14192,7 +14192,7 @@ Tilemap:
       - {fileID: -440046215, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
       - {fileID: 369434317, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
       - {fileID: 1839222253, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
-      m_AnimationSpeed: 5.0000005
+      m_AnimationSpeed: 5
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -14, y: -10, z: 0}
@@ -14432,7 +14432,7 @@ Tilemap:
       - {fileID: -440046215, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
       - {fileID: 369434317, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
       - {fileID: 1839222253, guid: 5e2d56bdbbec6154e9db61d7e2bafc9f, type: 3}
-      m_AnimationSpeed: 5
+      m_AnimationSpeed: 5.0000005
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -4, y: -10, z: 0}
@@ -15573,7 +15573,6 @@ GameObject:
   - component: {fileID: 1678329257}
   - component: {fileID: 1678329261}
   - component: {fileID: 1678329260}
-  - component: {fileID: 1678329259}
   m_Layer: 5
   m_Name: PopupCanvas
   m_TagString: Untagged
@@ -15602,23 +15601,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1678329259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1678329256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 55
 --- !u!114 &1678329260
 MonoBehaviour:
   m_ObjectHideFlags: 0
