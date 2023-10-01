@@ -58,7 +58,8 @@ namespace SmallTimeRogue.Items.Weapons
                     }
                 }
             }
-            _playerBody.AddForce(Vector2.up * _playerBody.jumpForce / 2f);
+            PlayerBody.StartCoroutine(PlayerBody.ReduceGravity(0.2f));
+            PlayerBody.AddForce(Vector2.up * PlayerBody.jumpForce);
         }
     }
 }

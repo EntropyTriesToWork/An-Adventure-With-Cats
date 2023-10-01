@@ -24,10 +24,10 @@ MonoBehaviour:
     critChance: 0
     critDamage: 0
     knockBack: 5
-    primaryCooldown: 0.2
-    primaryDuration: 0.05
+    primaryCooldown: 0.5
+    primaryDuration: 0.2
     secondaryCooldown: 1
-    secondaryDuration: 0.5
+    secondaryDuration: 2
     moveSpeedModifier: 0
     slowsPlayerWhenAttacking: 0
     allowsHoldingPrimaryDown: 1

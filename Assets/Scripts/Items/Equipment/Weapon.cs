@@ -23,15 +23,18 @@ namespace SmallTimeRogue.Items.Weapons
         public override void Awake()
         {
             base.Awake();
-            _weaponController = FindObjectOfType<WeaponController>();
-            if (_weaponController == null) { Debug.LogError("No WeaponController Found!"); Destroy(this); }
             stats = _stats.weaponStats;
+        }
+        private void Start()
+        {
+            _weaponController = FindObjectOfType<WeaponController>();
+            if (_weaponController == null) { Debug.LogError("No WeaponController Found!"); Destroy(gameObject); }
         }
         public virtual void Update()
         {
             if (_primaryCooldown >= 0f) { _primaryCooldown -= Time.deltaTime; }
             if (_secondaryCooldown >= 0f) { _secondaryCooldown -= Time.deltaTime; }
-            if (_primaryCooldown + stats.primaryDuration <= stats.primaryCooldown && _secondaryCooldown + stats.secondaryDuration <= stats.secondaryCooldown) { _sprite.enabled = true; }
+            if (_primaryCooldown + stats.primaryDuration <= stats.primaryCooldown) { _sprite.enabled = true; }
             else { _sprite.enabled = false; }
         }
         public override void Pickup()

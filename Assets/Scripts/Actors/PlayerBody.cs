@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using Sirenix.OdinInspector;
 using SmallTimeRogue.Stats;
 using System;
+using Cinemachine;
 
 namespace SmallTimeRogue.Player
 {
@@ -23,6 +24,7 @@ namespace SmallTimeRogue.Player
         [FoldoutGroup("ReadOnly")] [ReadOnly] public float dashesRemaining;
 
         [FoldoutGroup("Controls")] public float moveSpeed, jumpForce, dashForce;
+        [FoldoutGroup("Controls")] public AnimationCurve fallDamageCurve;
         [FoldoutGroup("Controls")] public int jumps, dashes;
         [FoldoutGroup("Controls")] public float dashCooldown, dashTime;
 
@@ -34,6 +36,7 @@ namespace SmallTimeRogue.Player
         private Rigidbody2D _rb;
         private BoxCollider2D _col;
         private Vector2 _playerSize;
+        private Vector2 lastSurfaceTouched;
         private float _lastDashTime;
         private HealthComponent _hc;
         private Coroutine _jumpGravityAffector = null;
@@ -57,6 +60,7 @@ namespace SmallTimeRogue.Player
 
             gravity.BaseValue = _rb.gravityScale;
             _hc = GetComponent<HealthComponent>();
+            Camera.main.GetComponent<CinemachineVirtualCamera>().Follow = this.transform;
         }
         public void Start()
         {
@@ -112,22 +116,22 @@ namespace SmallTimeRogue.Player
                 _rb.velocity = new Vector2(_rb.velocity.x, 0);
                 _rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 if (_jumpGravityAffector != null) { StopCoroutine(_jumpGravityAffector); _jumpGravityAffector = null; }
-                _jumpGravityAffector = StartCoroutine(JumpReduceGravity());
+                _jumpGravityAffector = StartCoroutine(ReduceGravity());
                 _hc.AddCollisionDamageImmunityTime(0.1f);
-
-                IEnumerator JumpReduceGravity()
-                {
-                    float time = 0.5f;
-                    _rb.gravityScale = 0;
-                    while (time > 0f)
-                    {
-                        yield return new WaitForFixedUpdate();
-                        time -= Time.fixedDeltaTime;
-                        _rb.gravityScale = Mathf.Lerp(gravity.Value, 0f, time / 0.5f);
-                    }
-                }
             }
         }
+
+        public IEnumerator ReduceGravity(float time = 0.5F)
+        {
+            _rb.gravityScale = 0;
+            while (time > 0f)
+            {
+                yield return new WaitForFixedUpdate();
+                time -= Time.fixedDeltaTime;
+                _rb.gravityScale = Mathf.Lerp(gravity.Value, 0f, time / 0.5f);
+            }
+        }
+
         public void CancelJump()
         {
             if (_jumpGravityAffector != null) { StopCoroutine(_jumpGravityAffector); _jumpGravityAffector = null; }
@@ -183,7 +187,11 @@ namespace SmallTimeRogue.Player
         {
             if (Physics2D.OverlapBox(transform.position + new Vector3(0, -_playerSize.y / 2f, 0), new Vector2(_playerSize.x * 0.95f, 0.2f), 0, LayerMask.GetMask("Ground")))
             {
+                float dist = Vector2.Distance(lastSurfaceTouched, transform.position);
+                Debug.Log(dist);
+                if (dist > 4f) { _hc.TakeDamage(new DamageInfo() { damage = Mathf.RoundToInt(fallDamageCurve.Evaluate(dist)) }); }
                 grounded = true;
+                lastSurfaceTouched = transform.position;
                 if (_rb.velocity.y < 1f)
                     jumpsRemaining = jumps;
             }

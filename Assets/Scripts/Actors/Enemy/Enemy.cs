@@ -84,12 +84,15 @@ namespace SmallTimeRogue.Enemy
                     target = DungeonManager.Instance?.Player.transform;
                     if (target == null) { _timeToNextStateCheck = _enemyStats.stateCheckIntervals; return; }
                 }
-                if (!activated) { Idle(); _timeToNextStateCheck = _enemyStats.stateCheckIntervals; return; }
-                if (HorizontalDistanceToTarget >= _enemyStats.attackRange) { Chase(); return; }
-                else if (!IsTargetInAttackRange) { Jump(); return; }
-                if (IsTargetInAttackRange && _attackCooldown <= 0f) { Attack(); _attackCooldown = _enemyStats.attackCooldown; return; }
-                Debug.LogWarning("No states were triggered!");
-                _timeToNextStateCheck = _enemyStats.stateCheckIntervals;
+                else
+                {
+                    if (!activated) { Idle(); _timeToNextStateCheck = _enemyStats.stateCheckIntervals; return; }
+                    if (HorizontalDistanceToTarget >= _enemyStats.attackRange) { Chase(); return; }
+                    else if (!IsTargetInAttackRange) { Jump(); return; }
+                    if (IsTargetInAttackRange && _attackCooldown <= 0f) { Attack(); _attackCooldown = _enemyStats.attackCooldown; return; }
+                    Debug.LogWarning("No states were triggered!");
+                    _timeToNextStateCheck = _enemyStats.stateCheckIntervals;
+                }
             }
         }
         public virtual void Idle()

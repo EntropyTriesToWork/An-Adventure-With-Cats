@@ -15,6 +15,8 @@ namespace SmallTimeRogue.Items
         public bool CanPickup { get => _canPickup; }
         private bool _canPickup, _canDiscard;
 
+        public PlayerBody PlayerBody { get { if (_playerBody == null) { _playerBody = FindObjectOfType<PlayerBody>(); } return _playerBody; } }
+
         protected SpriteRenderer _sprite;
         protected Rigidbody2D _rb;
         protected BoxCollider2D _col;
