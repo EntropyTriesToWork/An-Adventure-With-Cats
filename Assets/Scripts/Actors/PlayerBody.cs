@@ -62,7 +62,8 @@ namespace SmallTimeRogue.Player
 
             gravity.BaseValue = _rb.gravityScale;
             _hc = GetComponent<HealthComponent>();
-            Camera.main.GetComponent<CinemachineVirtualCamera>().Follow = this.transform;
+            FindObjectOfType<CinemachineVirtualCamera>().LookAt = this.transform;
+            FindObjectOfType<CinemachineVirtualCamera>().Follow = this.transform;
         }
         public void Start()
         {
